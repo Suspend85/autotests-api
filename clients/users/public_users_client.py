@@ -8,10 +8,10 @@ class CreateUserRequestDict(TypedDict):
 	Описание структуры запроса на создание пользователя.
 	"""
 	email: str
-	password: str | None
-	firstName: str | None
-	lastName: str | None
-	middleName: str | None
+	password: str
+	firstName: str
+	lastName: str
+	middleName: str
 
 class PublicUsersClient(APIClient):
 	"""
