@@ -20,30 +20,11 @@ class Exercise(TypedDict):
 	estimatedTime: str
 
 
-class GetExerciseQueryDict(TypedDict):
-	"""
-	Описание структуры запроса на получение конкретного упраженения.
-	"""
-	exercise_id: str
-
-class GetExerciseResponse(TypedDict):
-	"""
-	Описание полей ответа на получение конкретного упраженения.
-	"""
-	id: str
-	title: str
-	courseId: str
-	maxScore: int | None
-	minScore: int | None
-	orderIndex: int
-	description: str
-	estimatedTime: str | None
-
 class GetExerciseResponseDict(TypedDict):
 	"""
 	Описание структуры ответа на получение списка упраженений.
 	"""
-	exercise: GetExerciseResponse
+	exercise: Exercise
 
 
 class GetExercisesQueryDict(TypedDict):
@@ -52,24 +33,12 @@ class GetExercisesQueryDict(TypedDict):
 	"""
 	courseId: str
 
-class GetExercisesResponse(TypedDict):
-	"""
-	Описание полей ответа на получение списка упраженений.
-	"""
-	id: str
-	title: str
-	courseId: str
-	maxScore: int | None
-	minScore: int | None
-	orderIndex: int
-	description: str
-	estimatedTime: str | None
 
 class GetExercisesResponseDict(TypedDict):
 	"""
 	Описание структуры ответа на получение списка упраженений.
 	"""
-	exercises: List[GetExercisesResponse]
+	exercises: List[Exercise]
 
 
 class CreateExerciseRequestDict(TypedDict):
@@ -84,24 +53,12 @@ class CreateExerciseRequestDict(TypedDict):
 	description: str
 	estimatedTime: str | None
 
-class CreateExerciseResponse(TypedDict):
-	"""
-	Описание полей ответа на создание упражнения.
-	"""
-	id: str
-	title: str
-	courseId: str
-	maxScore: int
-	minScore: int
-	orderIndex: int
-	description: str
-	estimatedTime: str
 
 class CreateExerciseResponseDict(TypedDict):
 	"""
 	Описание структуры ответа создания упражнения.
 	"""
-	exercise: CreateExerciseResponse
+	exercise: Exercise
 
 
 class UpdateExerciseRequestDict(TypedDict):
@@ -115,27 +72,19 @@ class UpdateExerciseRequestDict(TypedDict):
 	description: str | None
 	estimatedTime: str | None
 
-class UpdateExerciseResponse(TypedDict):
-	"""
-	Описание полей ответа на обновление упражнения.
-	"""
-	id: str
-	title: str
-	courseId: str
-	maxScore: int
-	minScore: int
-	orderIndex: int
-	description: str
-	estimatedTime: str
 
 class UpdateExerciseResponseDict(TypedDict):
 	"""
 	Описание структуры ответа обновления упражнения.
 	"""
-	exercise: UpdateExerciseResponse
+	exercise: Exercise
 
 
 class ExercisesClient(APIClient):
+	"""
+	Клиент для работы с /api/v1/exercises
+	"""
+
 	def get_exercises_api(self, query: GetExercisesQueryDict) -> Response:
 		"""
 		Метод получения списка заданий по CourseId.
@@ -182,7 +131,7 @@ class ExercisesClient(APIClient):
 		"""
 		return self.delete(f'/api/v1/exercises/{exercise_id}')
 
-	def get_exercise(self, exercise_id: GetExerciseQueryDict) -> GetExerciseResponseDict:
+	def get_exercise(self, exercise_id: str) -> GetExerciseResponseDict:
 		response = self.get_exercise_api(exercise_id)
 		return response.json()
 
