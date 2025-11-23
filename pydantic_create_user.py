@@ -9,16 +9,18 @@ class UserSchema(BaseModel):
 
 	id: str = Field(default_factory=lambda: str(uuid.uuid4()))
 	email: EmailStr = "john@wick.film"
-	last_name: str = Field(alias="lastName", default="Wick")
-	first_name: str = Field(alias="firstName", default="Jordanni")
-	middle_name: str = Field(alias="middleName", default="Yovanovich")
+	last_name: str = "Wick"
+	first_name: str = "Jordanni"
+	middle_name: str = "Yovanovich"
 
 class CreateUserRequestSchema(BaseModel):
+	model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
+
 	email: EmailStr = "john@wick.film"
 	password: str = "123"
-	last_name: str = Field(alias="lastName", default="Wick")
-	first_name: str = Field(alias="firstName", default="Jordanni")
-	middle_name: str = Field(alias="middleName", default="Yovanovich")
+	last_name: str = "Wick"
+	first_name: str = "Jordanni"
+	middle_name: str = "Yovanovich"
 
 class CreateUserResponseSchema(BaseModel):
 	user: UserSchema

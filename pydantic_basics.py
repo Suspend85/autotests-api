@@ -27,62 +27,71 @@ import uuid
 from pydantic import BaseModel, Field, ConfigDict, computed_field, HttpUrl, EmailStr, ValidationError
 from pydantic.alias_generators import to_camel
 
+class CamelModel(BaseModel):
+    """
+    Базовый класс для Pydantic моделей с поддержкой camelCase alias.
+    """
+    model_config = ConfigDict(
+        alias_generator=to_camel,
+        validate_by_name=True,
+        serialize_by_alias=True
+    )
 
 class FileSchema(BaseModel):
-	id: str
-	filename: str
-	directory: str
-	url: HttpUrl
+    id: str
+    filename: str
+    directory: str
+    url: HttpUrl
 
-class UserSchema(BaseModel):
-	id: str
-	email: EmailStr
-	last_name: str = Field(alias="lastName")
-	first_name: str = Field(alias="firstName")
-	middle_name: str = Field(alias="middleName")
+class UserSchema(CamelModel):
+    id: str
+    email: EmailStr
+    last_name: str
+    first_name: str
+    middle_name: str
 
-	@computed_field()
-	def username(self) -> str:
-		return f"{self.first_name} {self.last_name}"
-
-
-	def get_username(self) -> str:
-		return f"{self.first_name} {self.last_name}"
+    @computed_field()
+    def username(self) -> str:
+        return f"{self.first_name} {self.last_name}"
 
 
-class CourseSchema(BaseModel):
-	model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
+    def get_username(self) -> str:
+        return f"{self.first_name} {self.last_name}"
 
-	id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-	title: str = "playwright"
-	min_score: int = Field(alias="minScore", default=1000)
-	max_score: int = Field(alias="maxScore", default=100)
-	description: str = "playwright course"
-	preview_file: FileSchema = Field(alias="previewFile")
-	estimated_time: str = Field(alias="estimatedTime", default="2 week")
-	created_by_user: UserSchema = Field(alias="createdByUser")
+
+class CourseSchema(CamelModel):
+    # model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
+
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str = "playwright"
+    min_score: int = Field(default=1000)
+    max_score: int = Field(default=100)
+    description: str = "playwright course"
+    preview_file: FileSchema
+    estimated_time: str = Field(default="2 week")
+    created_by_user: UserSchema
 
 
 course_default_model = CourseSchema(
-	id = "course-id",
-	title = "Playwright",
-	maxScore = 100,
-	minScore = 0,
-	description = "Playwright",
-	previewFile = FileSchema(
-		id="file-id",
-		url="http://localhost:8000",
-		filename="file.png",
-		directory="courses"
-	),
-	estimatedTime = "1 week",
-	createdByUser= UserSchema(
-		id="user-id",
-		email="user@example.com",
-		lastName="Уик",
-		firstName="Джордани",
-		middleName="Йованович"
-	)
+    id = "course-id",
+    title = "Playwright",
+    maxScore = 100,
+    minScore = 0,
+    description = "Playwright",
+    previewFile = FileSchema(
+        id="file-id",
+        url="http://localhost:8000",
+        filename="file.png",
+        directory="courses"
+    ),
+    estimatedTime = "1 week",
+    createdByUser= UserSchema(
+        id="user-id",
+        email="user@example.com",
+        lastName="Уик",
+        firstName="Джордани",
+        middleName="Йованович"
+    )
 )
 print(f'course_default_model: {course_default_model}')
 
@@ -93,20 +102,20 @@ course_dict = {
     "maxScore": 100,
     "minScore": 10,
     "description": "Playwright",
-	"previewFile": {
-		"id": "file-id",
-		"filename": "file.png",
-		"directory": "courses",
-		"url": "http://localhost:8000"
-	},
+    "previewFile": {
+        "id": "file-id",
+        "filename": "file.png",
+        "directory": "courses",
+        "url": "http://localhost:8000"
+    },
     "estimatedTime": "1 week",
-	"createdByUser": {
-		"id": "user-id",
-		"email": "user@example.com",
-		"lastName": "Уик",
-		"firstName": "Джордани",
-		"middleName": "Йованович"
-	}
+    "createdByUser": {
+        "id": "user-id",
+        "email": "user@example.com",
+        "lastName": "Уик",
+        "firstName": "Джордани",
+        "middleName": "Йованович"
+    }
 }
 course_dict_model = CourseSchema(**course_dict)
 print(f'course_dict_model: {course_dict_model}')
@@ -119,20 +128,20 @@ course_json = """
     "maxScore": 100,
     "minScore": 10,
     "description": "Playwright",
-	"previewFile": {
-		"id": "file-id",
-		"filename": "file.png",
-		"directory": "courses",
-		"url": "http://localhost:8000"
-	},
+    "previewFile": {
+        "id": "file-id",
+        "filename": "file.png",
+        "directory": "courses",
+        "url": "http://localhost:8000"
+    },
     "estimatedTime": "1 week",
-	"createdByUser": {
-		"id": "user-id",
-		"email": "user@example.com",
-		"lastName": "Уик",
-		"firstName": "Джордани",
-		"middleName": "Йованович"
-	}
+    "createdByUser": {
+        "id": "user-id",
+        "email": "user@example.com",
+        "lastName": "Уик",
+        "firstName": "Джордани",
+        "middleName": "Йованович"
+    }
 }
 """
 # десериализация = из json-строки в модель.
@@ -142,23 +151,23 @@ print(course_json_model.model_dump(by_alias=True)) # сериализует мо
 print(course_json_model.model_dump_json(by_alias=True)) # сериализует модель в json
 
 user = UserSchema(
-	id="user-id",
-	email="user@example.com",
-	lastName="Уик",
-	firstName="Джордани",
-	middleName="Йованович"
+    id="user-id",
+    email="user@example.com",
+    lastName="Уик",
+    firstName="Джордани",
+    middleName="Йованович"
 )
 print(user.get_username())
 print(user.username)
 
 
 try:
-	file = FileSchema(
-		id="file-id",
-		url="http://localhost:8000",
-		filename="file.png",
-		directory="courses"
-	)
+    file = FileSchema(
+        id="file-id",
+        url="http://localhost:8000",
+        filename="file.png",
+        directory="courses"
+    )
 except ValidationError as err:
-	print(err)
-	print(err.errors())
+    print(err)
+    print(err.errors())
