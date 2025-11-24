@@ -16,8 +16,6 @@ create_user_request = CreateUserRequestSchema(
 )
 
 create_user_response = public_users_client.create_user(create_user_request)
-create_user_response_schema = CreateUserResponseSchema.model_json_schema()
-print(create_user_response_schema)
 
 authentication_user = AuthenticationUserSchema(
 	email=create_user_request.email,
