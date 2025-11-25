@@ -2,12 +2,12 @@ import time
 
 import httpx
 
-from tools.fakers import get_random_email
+from tools.fakers import fake
 
 BASE = 'http://localhost:8000'
 
 create_user_payload = {
-	"email": get_random_email(),
+	"email": fake.email(),
 	"password": "tester",
 	"lastName": "Let",
 	"firstName": "Vasya",
@@ -28,7 +28,7 @@ print(f'Login data: {login_response_data}')
 
 update_user_headers = {"Authorization": f"Bearer {login_response_data['token']['accessToken']}"}
 update_user_data = {
-	"email": get_random_email(),
+	"email": fake.email(),
 	"lastName": f"string{time.time()}",
 	"firstName": f"string{time.time()}",
 	"middleName": f"string{time.time()}"

@@ -5,6 +5,7 @@ from pydantic.alias_generators import to_camel
 
 from clients.files.files_schema import FileSchema
 from clients.users.users_schema import UserSchema
+from tools.fakers import fake
 
 
 class CourseSchema(BaseModel):
@@ -36,13 +37,13 @@ class CreateCourseRequestSchema(BaseModel):
 	"""
 	model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
 
-	title: str
-	max_score: Optional[int]
-	min_score: Optional[int]
-	description: str
-	estimated_time: Optional[str]
-	preview_file_id: str
-	created_by_user_id: str
+	title: str = Field(default_factory=fake.sentence)
+	max_score: Optional[int] = Field(default_factory=fake.max_score)
+	min_score: Optional[int] = Field(default_factory=fake.min_score)
+	description: str = Field(default_factory=fake.text)
+	estimated_time: Optional[str] = Field(default_factory=fake.estimated_time)
+	preview_file_id: str = Field(default_factory=fake.uuid4) #  случайные данные тут подходят только для негативных кейсов
+	created_by_user_id: str = Field(default_factory=fake.uuid4) #  случайные данные тут подходят только для негативных кейсов
 
 class CreateCourseResponseSchema(BaseModel):
 	"""
@@ -57,11 +58,11 @@ class UpdateCourseRequestSchema(BaseModel):
 	"""
 	model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
 
-	title: Optional[str]
-	max_score: Optional[int]
-	min_score: Optional[int]
-	description: Optional[str]
-	estimated_time: Optional[str]
+	title: Optional[str] = Field(default_factory=fake.sentence)
+	max_score: Optional[int] = Field(default_factory=fake.max_score)
+	min_score: Optional[int] = Field(default_factory=fake.min_score)
+	description: Optional[str] = Field(default_factory=fake.text)
+	estimated_time: Optional[str] = Field(default_factory=fake.estimated_time)
 
 class UpdateCourseResponseSchema(BaseModel):
 	"""
