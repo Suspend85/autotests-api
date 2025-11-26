@@ -2,6 +2,7 @@ from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
+from tools.fakers import fake
 
 
 class ExerciseSchema(BaseModel):
@@ -47,13 +48,13 @@ class CreateExerciseRequestSchema(BaseModel):
 	"""
 	model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
 
-	title: str
-	course_id: str
-	max_score: Optional[int]
-	min_score: Optional[int]
-	order_index: int
-	description: str
-	estimated_time: Optional[str]
+	title: str = Field(default_factory=fake.sentence)
+	course_id: str = Field(default_factory=fake.uuid4)
+	max_score: Optional[int] = Field(default_factory=fake.max_score)
+	min_score: Optional[int] = Field(default_factory=fake.min_score)
+	order_index: int = Field(default_factory=fake.integer)
+	description: str = Field(default_factory=fake.text)
+	estimated_time: Optional[str] = Field(default_factory=fake.estimated_time)
 
 
 class CreateExerciseResponseSchema(BaseModel):
@@ -69,12 +70,12 @@ class UpdateExerciseRequestSchema(BaseModel):
 	"""
 	model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
 
-	title: Optional[str]
-	max_score: Optional[int]
-	min_score: Optional[int]
-	order_index: Optional[int]
-	description: Optional[str]
-	estimated_time: Optional[str]
+	title: Optional[str] = Field(default_factory=fake.sentence)
+	max_score: Optional[int] = Field(default_factory=fake.max_score)
+	min_score: Optional[int] = Field(default_factory=fake.min_score)
+	order_index: Optional[int] = Field(default_factory=fake.integer)
+	description: Optional[str] = Field(default_factory=fake.text)
+	estimated_time: Optional[str] = Field(default_factory=fake.estimated_time)
 
 
 class UpdateExerciseResponseSchema(BaseModel):
